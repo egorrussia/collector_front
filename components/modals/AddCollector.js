@@ -2,6 +2,7 @@ import { Button, Input } from "antd"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { closeModal } from "@/components/modals/redux/actions"
+import { createCollector } from "@/components/collectors/redux/actions"
 
 const AddCollector = () => {
     const [params, setParams] = useState({
@@ -13,13 +14,13 @@ const AddCollector = () => {
 
     const dispatch = useDispatch()
     const addCollector = () => {
-        dispatch(closeModal())
-        // dispatch(createCategory({parentId, title:nodeName})).then(
-        //     ()=>{
-        //         dispatch(closeModal())
-        //         successCallback()
-        //     }
-        // )
+        console.log("push")
+        dispatch(createCollector(params)).then(
+            () => {
+                dispatch(closeModal())
+                successCallback()
+            }
+        )
     }
 
     return (
