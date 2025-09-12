@@ -1,18 +1,19 @@
-const API_URL = process.env.API_URL
+export const API_URL = process.env.API_URL || 'http://localhost:3002'
 
 export const getCollectorsListRequest = async (params) => {
 
     let url = `${API_URL}/collectors`
 
-    if(params){
-        url += `?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`
-    }
+    // if(params){
+    //     url += `?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`
+    // }
     return fetch(url, {
         headers: {
             // "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json"
         },
-        method: "GET"
+        method: "POST",
+        body: JSON.stringify(params)
 
     }).then(res => res.json())
 

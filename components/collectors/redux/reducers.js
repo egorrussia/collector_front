@@ -1,7 +1,8 @@
 import * as types from './types';
 
 const initialState = {
-  collectors: []
+  collectors: [],
+  pagination: {}
 };
 
 
@@ -13,7 +14,8 @@ export const collectorsReducer = (
     case types.LOAD_COLLECTORS:
       return {
         ...state,
-        collectors: payload.items
+        collectors: payload.result.items,
+        pagination: payload.result.pagination
       };
     case types.CREATE_COLLECTOR:
       return {
