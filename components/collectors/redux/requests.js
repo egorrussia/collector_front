@@ -48,3 +48,18 @@ export const createCollectorRequest = async (params) => {
 
 }
 
+export const deleteCollectorRequest = async (params) => {
+
+    let url = `${API_URL}/collector/remove`
+    return fetch(url, {
+        headers: {
+            // "Authorization": `Bearer ${user.token}`,
+            "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(params)
+
+    }).then(res => res.json())
+
+}
+

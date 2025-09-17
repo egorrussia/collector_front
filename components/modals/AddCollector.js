@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 import { closeModal } from "@/components/modals/redux/actions"
 import { createCollector } from "@/components/collectors/redux/actions"
 
-const AddCollector = () => {
+const AddCollector = ({ callback }) => {
     const [params, setParams] = useState({
         ipAddress: null,
         port: null,
@@ -13,15 +13,15 @@ const AddCollector = () => {
     })
 
     const dispatch = useDispatch()
-    const addCollector = () => {
-        console.log("push")
-        dispatch(createCollector(params)).then(
-            () => {
-                dispatch(closeModal())
-                successCallback()
-            }
-        )
-    }
+
+    const addCollector = async () => {
+        try {
+            await dispatch(createCollector(params))
+            callback();
+        } catch (error) {
+            message.error('Ошибка при создании');
+        }
+    };
 
     return (
 

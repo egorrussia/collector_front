@@ -1,7 +1,7 @@
 import * as types from './types';
 
 const initialState = {
-  modal: {type: null, params: null}
+  modal: {type: null, params: null, callback: null}
 };
 
 

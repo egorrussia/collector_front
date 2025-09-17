@@ -1,10 +1,10 @@
 import * as types from './types'
 
-export const openModal = (type, params=null) => (dispatch) => {
+export const openModal = (type, params=null, callback=null) => (dispatch) => {
 
     dispatch({
         type: types.SET_MODAL,
-        payload: {type, params}
+        payload: {type, params, callback}
     })
 
 }

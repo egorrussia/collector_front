@@ -27,6 +27,8 @@ export const collectorsReducer = (
         ...state,
         collectors: [...state.collectors, payload]
       };
+    case types.DELETE_COLLECTOR:
+      return state;
     default:
       return state;
   }

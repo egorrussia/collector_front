@@ -6,7 +6,7 @@ import { closeModal } from "@/components/modals/redux/actions";
 const Popup = () => {
 
 	const dispatch = useDispatch()
-	let {type, params} = useSelector(m => m.forms.modal)
+	let {type, params, callback} = useSelector(m => m.forms.modal)
 
 	const isOpen = type ? true : false
 	
@@ -21,7 +21,7 @@ const Popup = () => {
 			onCancel={()=>dispatch(closeModal())}
 			footer={null}
 		>
-			<Component params={params} />
+			<Component params={params} callback={callback}/>
 		</Modal>
 	)
 }

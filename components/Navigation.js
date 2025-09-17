@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Button, Spin } from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -16,6 +16,7 @@ export default function Navigation({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+
 
   const menuConfig = [
     { key: '1', path: '/', icon: <UserOutlined />, label: 'Главная' },
