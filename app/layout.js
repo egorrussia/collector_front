@@ -1,7 +1,9 @@
 "use client"
+
 import React from 'react';
-import { AuthProvider } from "@/components/context/Auth"
-import { MainProvider } from "@/components/context/Main"
+import { AuthProvider, useAuthContext } from "@/components/context/Auth";
+import { Spin } from "antd";
+
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { Provider } from 'react-redux';
 import { useStore } from '@/redux/store';
@@ -9,6 +11,29 @@ import './globals.css'
 
 import Popup from '@/components/Popup';
 import Navigation from '@/components/Navigation';
+
+const AuthLayout = ({ children }) => {
+	const {user, isLoading} = useAuthContext();
+
+	if (isLoading) {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<Spin size="large" />
+			</div>
+		);
+	}
+	console.log(user)
+	return (!user.token) ? (
+		<>
+			<Navigation>{children}</Navigation>
+			<Popup />
+		</>
+	) : (
+		<div className="min-h-screen">
+			{children}
+		</div>
+	);
+};
 
 export default function RootLayout({ children }) {
 	const store = useStore()
@@ -19,12 +44,7 @@ export default function RootLayout({ children }) {
 				<AntdRegistry>
 					<Provider store={store}>
 						<AuthProvider>
-							<MainProvider>
-								<Navigation>
-									{children}
-								</Navigation>
-								<Popup />
-							</MainProvider>
+							<AuthLayout>{children}</AuthLayout>
 						</AuthProvider>
 					</Provider>
 				</AntdRegistry>

@@ -1,96 +1,96 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL } from "../../config";
+const API_URL = process.env.API_URL || "http://localhost:3002";
 
 const AuthContext = createContext();
 
-const defaultUser = {loading:true}
-
-const setIntoStorage = (user) =>{
-    localStorage.setItem("binance-user",JSON.stringify(user))
+const setIntoStorage = (user) => {
+    localStorage.setItem("collector-user", JSON.stringify(user))
 }
 
-const getFromStorage = () =>{
-    if(!window) return defaultUser
-    const userstr = localStorage.getItem("binance-user")
-    if(userstr){
-        return JSON.parse(userstr)
+const getFromStorage = () => {
+
+    if (typeof window === 'undefined') {
+        return { user: null};
     }
-    return {loading:false}
+
+    try {
+        const userStr = localStorage.getItem("collector-user");
+        if (userStr) {
+            return {
+                user: JSON.parse(userStr),
+            };
+        }
+        return { user: null};
+
+    } catch (error) {
+        console.error('Ошибка чтения из localStorage:', error);
+        return { user: null};
+    }
+};
+
+const deleteFromStorage = () => {
+    localStorage.clear("collector-user")
 }
 
-const deleteFromStorage = () =>{
-    localStorage.clear("binance-user")
-}
+export const AuthProvider = ({ children }) => {
 
-export const AuthProvider= ({children})=>{
+    const router = useRouter();
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [user, setUser] = useState(defaultUser);
-
-    console.log({user})
-
-    const login = ({login,password}) => {
-        fetch(`${API_URL}/login`,{
-            headers:{
+    const login = ({ login, password }) => {
+        fetch(`${API_URL}/login`, {
+            headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                login,password
+                login, password
             }),
             method: "POST"
 
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.token){
-                setUser({
-                    ...data,
-                    loading: false
-                })
-                setIntoStorage({
-                    ...data,
-                    loading: false
-                })
+        }).then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    setUser({
+                        ...data.result
+                    })
+                    setIntoStorage({
+                        ...data.result
+                    })
+                    setIsLoading(false)
+                }
 
-            }
-
-        })
+            })
 
 
     }
 
-    const setUserSettings = (settings) => {
-
-        setIntoStorage({
-            ...user,
-            settings
-        })
-
-        setUser({
-            ...user,
-            settings
-        })
-    }
-
-    const router = useRouter();
-    const logout = () =>{
+    const logout = () => {
         setUser({})
         router.push("/signin")
         deleteFromStorage()
 
     }
 
-    useEffect(()=>{
-        setUser(getFromStorage())
-    },[]);
+    useEffect(() => {
+        const userData = getFromStorage();
+        setUser(userData);
+        setIsLoading(false);
+    }, []);
 
-    const value = {user,login,logout,setUserSettings}
 
-    return(
+    const value = {
+        user,
+        isLoading,
+        login,
+        logout
+    }
+
+    return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     )
 
-
-
 }
 
-export const useAuthContext = ()=> useContext(AuthContext)
+export const useAuthContext = () => useContext(AuthContext)
